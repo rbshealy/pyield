@@ -6,36 +6,57 @@ class HyperBool(Enum):
     X = 0.5
     ERR = float('inf')
 
-    concrete_vals = [1.0, 0]
-    non_concrete_vals = [0.5, float('inf')]
+    _concrete_vals = [TRUE, FALSE]
+    _non_concrete_vals = [X, ERR]
 
-    def __init__(self):
-        self.concrete = True
+    def __init__(self, value):
+        self.value = value
+        if value in HyperBool._concrete_vals:
+            self.is_concrete = True
+        else:
+            self.is_concrete = False
 
     def __repr__(self):
         return f"HyperBool(value = {self.value})"
 
     def __add__(self, other):
         if self.__class__ is other.__class__:
-            if self.value in self.concrete_vals and other.value in self.concrete_vals:
+            if self.is_concrete and other.is_concrete:
                 return HyperBool(bool(self.value) or bool(other.value))
             else:
-                return HyperBool(self.value + other.value)
+                return NotImplemented
         return NotImplemented
 
     def __mul__(self, other):
         if self.__class__ is other.__class__:
-            return HyperBool(self.value + other.value)
+            if self.is_concrete and other.is_concrete:
+                return HyperBool(bool(self.value) and bool(other.value))
+            else:
+                return NotImplemented
         return NotImplemented
 
     def __sub__(self, other):
         if self.__class__ is other.__class__:
-            return HyperBool(self.value + other.value)
+            if self.is_concrete and other.is_concrete:
+                return HyperBool(bool(self.value) and bool(other.value))
+            else:
+                return NotImplemented
         return NotImplemented
 
     def __truediv__(self, other):
         if self.__class__ is other.__class__:
-            return HyperBool(self.value + other.value)
+            if self.is_concrete and other.is_concrete:
+                return HyperBool(bool(self.value) and bool(other.value))
+            else:
+                return NotImplemented
+        return NotImplemented
+
+    def __pow__(self, other):
+        if self.__class__ is other.__class__:
+            if self.is_concrete and other.is_concrete:
+                return HyperBool(bool(self.value) and bool(other.value))
+            else:
+                return NotImplemented
         return NotImplemented
 
 
